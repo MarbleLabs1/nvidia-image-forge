@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -52,6 +53,19 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
+				nvidia: {
+					50: '#eafaf0',
+					100: '#d7f5e2',
+					200: '#afebc5',
+					300: '#76dd9b',
+					400: '#43c571',
+					500: '#2aa354',
+					600: '#1d8342',
+					700: '#176434',
+					800: '#114428',
+					900: '#0b2c1b',
+					950: '#061812'
+				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',
@@ -84,11 +98,16 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'pulse-green': {
+					'0%, 100%': { opacity: '1' },
+					'50%': { opacity: '0.5' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'pulse-green': 'pulse-green 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
 			}
 		}
 	},
