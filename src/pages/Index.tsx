@@ -1,47 +1,57 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Navbar } from "@/components/Navbar";
-import { ApiKeyForm } from "@/components/ApiKeyForm";
 import { ImageGenerationForm } from "@/components/ImageGenerationForm";
 import { ImageGallery } from "@/components/ImageGallery";
-import { GenerateImageParams, GeneratedImage, RunwareService } from "@/services/runwareService";
+import { LocalGpuService, LocalGenerateImageParams } from "@/services/localGpuService";
 import { toast } from "sonner";
 
+interface GeneratedImage {
+  imageURL: string;
+  positivePrompt: string;
+  seed?: number;
+}
+
 const Index = () => {
-  const [apiKey, setApiKey] = useState<string | null>(
-    localStorage.getItem("runware_api_key")
-  );
-  const [runwareService, setRunwareService] = useState<RunwareService | null>(null);
+  const [localGpuService] = useState(() => new LocalGpuService());
+  const [isInitialized, setIsInitialized] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [generatedImages, setGeneratedImages] = useState<GeneratedImage[]>([]);
 
-  const handleApiKeySubmit = (key: string) => {
-    try {
-      localStorage.setItem("runware_api_key", key);
-      setApiKey(key);
-      const service = new RunwareService(key);
-      setRunwareService(service);
-      toast.success("API key connected successfully");
-    } catch (error) {
-      console.error("Error initializing Runware service:", error);
-      toast.error("Failed to initialize service with provided API key");
-    }
-  };
+  useEffect(() => {
+    const initializeGpu = async () => {
+      const success = await localGpuService.initialize();
+      if (success) {
+        setIsInitialized(true);
+        toast.success("Local GPU initialized successfully");
+      } else {
+        toast.error("Failed to initialize GPU. Make sure you have a compatible NVIDIA GPU and latest drivers installed.");
+      }
+    };
 
-  const handleGenerateImage = async (params: GenerateImageParams) => {
-    if (!runwareService) {
-      toast.error("API service not initialized");
+    initializeGpu();
+  }, [localGpuService]);
+
+  const handleGenerateImage = async (params: LocalGenerateImageParams) => {
+    if (!isInitialized) {
+      toast.error("GPU not initialized");
       return;
     }
 
     setIsLoading(true);
 
     try {
-      const generatedImage = await runwareService.generateImage(params);
-      setGeneratedImages(prevImages => [generatedImage, ...prevImages]);
+      const result = await localGpuService.generateImage(params);
+      const newImage = {
+        imageURL: URL.createObjectURL(result),
+        positivePrompt: params.prompt,
+        seed: params.seed,
+      };
+      
+      setGeneratedImages(prev => [newImage, ...prev]);
       toast.success("Image generated successfully!");
     } catch (error) {
-      console.error("Image generation failed:", error);
+      console.error("Generation failed:", error);
       toast.error("Failed to generate image. Please try again.");
     } finally {
       setIsLoading(false);
@@ -56,24 +66,18 @@ const Index = () => {
           <div className="space-y-4 mb-8">
             <h1 className="text-4xl font-bold tracking-tight">NVIDIA Image Forge</h1>
             <p className="text-muted-foreground text-lg">
-              Generate stunning, high-quality images powered by NVIDIA GPU technology
+              Generate stunning, high-quality images powered by your local NVIDIA GPU
             </p>
           </div>
 
-          {!apiKey ? (
-            <ApiKeyForm onSubmit={handleApiKeySubmit} />
-          ) : (
-            <>
-              <ImageGenerationForm onSubmit={handleGenerateImage} isLoading={isLoading} />
-              <ImageGallery images={generatedImages} isLoading={isLoading} />
-            </>
-          )}
+          <ImageGenerationForm onSubmit={handleGenerateImage} isLoading={isLoading} />
+          <ImageGallery images={generatedImages} isLoading={isLoading} />
         </div>
       </main>
       <footer className="border-t py-6">
         <div className="container px-4">
           <p className="text-center text-sm text-muted-foreground">
-            &copy; {new Date().getFullYear()} NVIDIA Image Forge. Powered by NVIDIA GPU technology.
+            &copy; {new Date().getFullYear()} NVIDIA Image Forge. Powered by local NVIDIA GPU technology.
           </p>
         </div>
       </footer>
