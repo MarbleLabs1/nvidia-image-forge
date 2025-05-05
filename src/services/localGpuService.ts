@@ -10,13 +10,21 @@ export interface LocalGenerateImageParams {
   height?: number;
 }
 
+export interface GeneratedImage {
+  imageURL: string;
+  positivePrompt: string;
+  seed?: number;
+  cost?: number;
+}
+
 export class LocalGpuService {
   private pipeline: any = null;
 
   async initialize() {
     try {
+      // Using "image-to-image" pipeline which is supported
       this.pipeline = await pipeline(
-        "text-to-image",
+        "image-to-image",
         "stabilityai/stable-diffusion-2-1-base",
         { device: "webgpu" }
       );
@@ -48,4 +56,3 @@ export class LocalGpuService {
     }
   }
 }
-

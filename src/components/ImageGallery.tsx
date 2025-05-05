@@ -3,7 +3,7 @@ import { Download, Loader2 } from "lucide-react";
 import { Button } from "./ui/button";
 import { useState } from "react";
 import { toast } from "sonner";
-import { GeneratedImage } from "@/services/runwareService";
+import { GeneratedImage } from "@/services/localGpuService";
 
 interface ImageGalleryProps {
   images: GeneratedImage[];

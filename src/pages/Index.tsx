@@ -1,16 +1,9 @@
-
 import { useState, useEffect } from "react";
 import { Navbar } from "@/components/Navbar";
 import { ImageGenerationForm } from "@/components/ImageGenerationForm";
 import { ImageGallery } from "@/components/ImageGallery";
-import { LocalGpuService, LocalGenerateImageParams } from "@/services/localGpuService";
+import { LocalGpuService, LocalGenerateImageParams, GeneratedImage } from "@/services/localGpuService";
 import { toast } from "sonner";
-
-interface GeneratedImage {
-  imageURL: string;
-  positivePrompt: string;
-  seed?: number;
-}
 
 const Index = () => {
   const [localGpuService] = useState(() => new LocalGpuService());
