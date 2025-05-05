@@ -41,6 +41,15 @@ export class LocalGpuService {
     }
 
     try {
+      console.log("Generating image with params:", {
+        prompt: params.prompt,
+        negative_prompt: params.negativePrompt,
+        num_inference_steps: params.numSteps || 20,
+        seed: params.seed,
+        width: params.width || 512,
+        height: params.height || 512,
+      });
+      
       const result = await this.pipeline(params.prompt, {
         negative_prompt: params.negativePrompt,
         num_inference_steps: params.numSteps || 20,
@@ -49,6 +58,7 @@ export class LocalGpuService {
         height: params.height || 512,
       });
 
+      console.log("Image generation completed");
       return result;
     } catch (error) {
       console.error("Image generation failed:", error);
