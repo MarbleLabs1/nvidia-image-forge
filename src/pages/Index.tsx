@@ -10,6 +10,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Info, Moon, Coffee } from "lucide-react";
 import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge"; // Add this import for Badge component
 
 const Index = () => {
   const [localGpuService] = useState(() => new LocalGpuService());
