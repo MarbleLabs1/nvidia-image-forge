@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Navbar } from "@/components/Navbar";
 import { ImageGenerationForm } from "@/components/ImageGenerationForm";
@@ -14,7 +15,7 @@ import { ImageProgress } from "@/components/ImageProgress";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { Keyboard } from "lucide-react";
 
-const Index = () => {
+const IndexContent = () => {
   const [localGpuService] = useState(() => new LocalGpuService());
   const [isInitialized, setIsInitialized] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -161,13 +162,13 @@ const Index = () => {
       </div>
     </>
   );
-}
+};
 
-// We need to wrap the component with ThemeProvider to enable theme switching
-const IndexWithTheme = () => (
+// Main component wrapped with ThemeProvider
+const Index = () => (
   <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-    <Index />
+    <IndexContent />
   </ThemeProvider>
 );
 
-export default IndexWithTheme;
+export default Index;
